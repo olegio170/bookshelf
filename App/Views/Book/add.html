@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Add book{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/book/list">Books</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Add</li>
+            </ol>
+        </nav>
+
+        <h2>Add a book</h2>
+
+        <hr>
+
+        <form action="/book/create" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="bookTitle">Title</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        name="title"
+                        id="bookTitle"
+                        placeholder="Book title"
+                        required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="bookGenre">Genre</label>
+                <select class="form-control selectpicker" name="genre" id="bookGenre" data-live-search="true">
+                    {% for genre in genres %}
+                        <option value="{{ genre.id }}">{{ genre.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bookAuthor">Author</label>
+                <select class="form-control selectpicker" name="author" id="bookAuthor" data-live-search="true">
+                    {% for author in authors %}
+                        <option value="{{ author.id }}">{{ author.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bookLanguage">Language</label>
+                <select class="form-control selectpicker" name="language" id="bookLanguage" data-live-search="true">
+                    {% for language in languages %}
+                        <option value="{{ language.id }}">{{ language.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bookPublicationDate">Publication date</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        name="publication_date"
+                        id="bookPublicationDate"
+                        placeholder="Book publication date">
+            </div>
+
+            <div class="form-group">
+                <label for="bookISBN">ISBN</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        name="isbn"
+                        id="bookISBN"
+                        placeholder="ISBN-13 number"
+                        required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="bookDescription">Description</label>
+                <textarea
+                        class="form-control"
+                        name="description"
+                        id="bookDescription"
+                        placeholder="Book description"
+                        rows="8"
+                        required="required"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="bookPicture">Image</label>
+                <div class="custom-file">
+                    <input
+                            type="file"
+                            class="custom-file-input"
+                            name="picture"
+                            id="bookPicture"
+                            required="required">
+                    <label class="custom-file-label" for="bookPicture">Choose file</label>
+                </div>
+            </div>
+
+            <div class="form-group clearfix">
+                <div class="float-right">
+                    <a href="/book/list" class="btn">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Add Book</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-datepicker3.min.css">
+{% endblock %}
+
+{% block script %}
+    <script src="/js/bootstrap-select.min.js"></script>
+    <script src="/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        $('#bookPublicationDate').datepicker({
+            format: 'yyyy-mm-dd',
+            uiLibrary: 'bootstrap4'
+        });
+
+        $('.custom-file-input').on('change',function(){
+            $(this).next('.custom-file-label').addClass("selected").html($(this).val());
+        })
+    </script>
+{% endblock %}

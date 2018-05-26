@@ -1,0 +1,20 @@
+{
+    "name": "olegio170/bookshelf",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "olegio170",
+            "email": "olegios170@gmail.com"
+        }
+    ],
+    "require": {
+        "twig/twig": "~2.0"
+    },
+    "autoload": {
+        "psr-4": {
+             "Core\\": "Core/",
+             "App\\": "App/"
+        }
+    }
+}

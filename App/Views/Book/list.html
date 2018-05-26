@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Books{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+
+                {% if query %}
+                    <li class="breadcrumb-item"><a href="/book/list">Books</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Search ({{ query }})</li>
+                {% else %}
+                    <li class="breadcrumb-item active" aria-current="page">Books</li>
+                {% endif %}
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <form class="form-inline" method="get">
+                        <input
+                                class="form-control mr-sm-2"
+                                type="text"
+                                name="query"
+                                placeholder="Search"
+                                aria-label="Search"
+                                value="{{ query }}">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-6">
+                <a href="/book/add" class="btn btn-primary float-right">
+                    Add Book
+                </a>
+            </div>
+        </div>
+
+        {% if books %}
+            <table class="table" id="bookList">
+                <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Author</th>
+                        <th scope="col">Genre</th>
+                        <th scope="col">Language</th>
+                        <th scope="col">Published</th>
+                        <th scope="col">ISBN</th>
+                        <th scope="col" class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                        <tr data-picture="{{ book.picture }}">
+                            <td class="preview"><a href="/book/view/{{ book.id }}">{{ book.title }}</a></td>
+                            <td class="preview">{{ book.author }}</td>
+                            <td class="preview">{{ book.genre }}</td>
+                            <td class="preview">{{ book.language }}</td>
+                            <td class="preview">{{ book.publication_date }}</td>
+                            <td class="preview">{{ book.isbn_number }}</td>
+                            <td class="text-right">
+                                <a href="/book/edit/{{ book.id }}" class="btn-sm btn-primary">Edit</a>
+                                <a
+                                        href="#"
+                                        class="btn-sm btn-danger deleteBook"
+                                        data-id="{{ book.id }}"
+                                        data-title="{{ book.title }}"
+                                        data-toggle="modal"
+                                        data-target="#deleteModal">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <hr>
+
+            <h3 class="text-muted text-center mt-2 mb-4">
+                {% if query %}
+                    No books matching your query
+                {% else %}
+                    Nothing to display
+                {% endif %}
+            </h3>
+        {% endif %}
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Are you sure you want to delete <strong id="deleteBookTitle">{{ book.title }}</strong> book?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="deleteBook" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $('#deleteBook').on('click', function() {
+        window.location = '/book/delete/' + $(this).data('id');
+    });
+
+    $('.deleteBook').on('click', function () {
+        $('#deleteBook').data('id', $(this).data('id'));
+        $('#deleteBookTitle').text($(this).data('title'));
+    });
+
+    var xOffset = 10;
+    var yOffset = 10;
+
+    $("#bookList .preview").hover(function(e) {
+        var pictureUrl = $(this).parent().data('picture');
+        $("body").append('<p id="bookPreview"><img src="/images/book/' + pictureUrl + '"/></p>');
+
+        $("#bookPreview")
+            .css("top",(e.pageY - xOffset) + "px")
+            .css("left",(e.pageX + yOffset) + "px")
+            .fadeIn("fast");
+    }, function() {
+        this.title = this.t;
+        $("#bookPreview").remove();
+    });
+
+    $("#bookList").mousemove(function(e) {
+        $("#bookPreview")
+            .css("top",(e.pageY - xOffset) + "px")
+            .css("left",(e.pageX + yOffset) + "px");
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/book/list">Books</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ book.title }}</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col">
+                <h2>{{ book.title }}</h2>
+            </div>
+            <div class="col">
+                <a href="#" class="btn btn-danger float-right" data-toggle="modal" data-target="#deleteModal">Delete</a>
+                <a href="/book/edit/{{ book.id }}" class="btn btn-primary float-right mr-2">Edit</a>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="clearfix">
+            <a href="/images/book/{{ book.picture }}">
+                <img src="/images/book/{{ book.picture }}" class="img-responsive mr-4 mb-4" align="left" style="max-width: 25%">
+            </a>
+            <p>
+                <strong>Genre:</strong> {{ book.genre }}<br>
+                <strong>Author:</strong> {{ book.author }}<br>
+                <strong>Language:</strong> {{ book.language }}<br>
+                <strong>ISBN:</strong> {{ book.isbn_number }}<br>
+                <strong>Published:</strong> {{ book.publication_date }}
+            </p>
+            <p class="mt-4">
+                {{ book.description|nl2br }}
+            </p>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Are you sure you want to delete <strong>{{ book.title }}</strong> book?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="deleteBook" data-id="{{ book.id }}" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $('#deleteBook').on('click', function() {
+        window.location = '/book/delete/' + $(this).data('id');
+    });
+</script>
+{% endblock %}
